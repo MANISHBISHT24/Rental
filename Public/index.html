@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Himalayan Rides – Bike Rental & Tour Packages</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/lenis@1.1.18/dist/lenis.css">
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a href="#home" class="logo">⛰ <span>HIMALAYAN RIDES<small>Ride · Explore · Experience</small></span></a>
+  <button class="burger" id="burger" aria-label="Menu">☰</button>
+  <nav id="menu">
+    <a href="#home" class="active">Home</a><a href="#packages">Packages</a><a href="#about">About</a>
+    <a href="#fleet">Fleet</a><a href="#gallery">Gallery</a><a href="#reviews">Reviews</a><a href="#book">Contact</a>
+  </nav>
+  <div class="nav-right"><a href="my.html" class="link">My Bookings</a><button class="icon-btn" aria-label="Search">🔍</button><a href="#book" class="btn btn-yellow">Book Now</a></div>
+</header>
+
+<section class="hero" id="home">
+  <img class="hero-photo" src="images/g1.jpg.png" alt="Biker riding towards Om Parvat in the Himalayas">
+  <div class="hero-text">
+    <p class="kicker">BIKE RENTAL & TOUR PACKAGES</p>
+    <h1>Ride to <em>Om Parvat</em> & <em>Adi Kailash</em></h1>
+    <p class="lead">Experience the divine beauty of the Himalayas with our well-planned bike rental packages. Ride through heaven's paths, explore untouched landscapes and create memories for a lifetime.</p>
+    <div class="features">
+      <div><span>🏍</span><b>Premium Bikes</b><small>Well Maintained</small></div>
+      <div><span>🛡</span><b>Safety First</b><small>Full Support</small></div>
+      <div><span>🏔</span><b>Expert Guidance</b><small>Local Team</small></div>
+    </div>
+    <div class="hero-btns">
+      <a href="#packages" class="btn btn-yellow big">Explore Packages →</a>
+      <button class="btn btn-ghost big" id="watchBtn">▶ Watch Video</button>
+    </div>
+  </div>
+  <div class="hero-loc">📍 <span>Om Parvat<small>Uttarakhand</small></span></div>
+</section>
+
+<main>
+
+<section class="stats"><div><b data-n="1200">0</b><span>Happy riders</span></div><div><b data-n="12">0</b><span>Years in the Himalayas</span></div><div><b data-n="40">0</b><span>Local road captains</span></div><div><b data-n="98">0</b><span>% riders rate us 5 stars</span></div></section>
+<section class="section" id="packages">
+  <div class="head">
+    <div><h2>Featured Packages</h2><p class="muted">Choose from our specially curated bike tour packages to Om Parvat and Adi Kailash.</p></div>
+    <a href="#packages" class="link">View All Packages →</a>
+  </div>
+  <div class="tabs" id="tabs"><button class="on" data-f="all">All</button><button data-f="om">Om Parvat</button><button data-f="adi">Adi Kailash</button><button data-f="combo">Combo</button></div>
+  <div class="grid3" id="pkgGrid"></div>
+</section>
+
+<section class="why" id="about">
+  <div class="why-in">
+    <h2>Why Ride With Us?</h2>
+    <div class="why-grid">
+      <div><span>🏍</span><b>Well Maintained Bikes</b><small>Royal Enfield, Himalayan, etc.</small></div>
+      <div><span>🧑‍🤝‍🧑</span><b>Experienced Guides</b><small>Local & Certified</small></div>
+      <div><span>🧭</span><b>Custom Packages</b><small>Flexible Itineraries</small></div>
+      <div><span>🛠</span><b>24/7 Support</b><small>On Trip Assistance</small></div>
+    </div>
+    <p class="quote">"Not just a trip,<br>it's a journey within."</p>
+  </div>
+</section>
+
+<section class="route" id="route">
+  <div class="route-in">
+    <h2>Your <em>Route,</em> Step by Step</h2>
+    <p class="route-sub">The classic Kumaon to Vyas Valley ride, from Haldwani to the base of Om Parvat.</p>
+    <p class="script">Same Roads · New Stories · Divine Destinations</p>
+    <div class="route-map">
+      <svg viewBox="0 0 1000 580" preserveAspectRatio="none" aria-hidden="true"><path d="M95 440 C175 440 175 380 255 380 S345 310 425 310 S515 250 595 250 S685 190 765 190 S835 120 915 120" vector-effect="non-scaling-stroke"/></svg>
+      <ol>
+        <li class="stop" style="--x:2%;--y:330px"><div class="ph" style="background-image:url(Images_2/hald.jpg.jpg)"></div><span class="pin">📍</span><h3>1. Haldwani <small>/ Kathgodam</small></h3><p>The journey begins from Haldwani, to the base of Om Parvat.</p><em>🏍 0 km</em></li>
+        <li class="stop" style="--x:18%;--y:270px"><div class="ph" style="background-image:url(Images_2/Al.jpg.jpg)"></div><span class="pin">📍</span><h3>2. Almora → Pithoragarh</h3><p>Ride through scenic hills, forests and the first taste of Kumaon's beauty.</p><em>🏍 ~ 320 km</em></li>
+        <li class="stop" style="--x:35%;--y:200px"><div class="ph" style="background-image:url(Images_2/Dharchula.jpg.jpg)"></div><span class="pin">📍</span><h3>3. Dharchula</h3><p>Cross the Kali River and reach the last major town before the high-altitude region.</p><em>🏍 ~ 180 km</em></li>
+        <li class="stop" style="--x:52%;--y:140px"><div class="ph" style="background-image:url(Images_2/Gunji.jpg.jpg)"></div><span class="pin">📍</span><h3>4. Gunji</h3><p>A remote paradise with raw Himalayan charm and cold winds.</p><em>🏍 ~ 110 km</em></li>
+        <li class="stop" style="--x:69%;--y:80px"><div class="ph" style="background-image:url(Images_2/hg.jpg.jpg)"></div><span class="pin">📍</span><h3>5. Nachiketang</h3><p>Peaceful valley, snow views and divine vibes.</p><em>🏍 ~ 90 km</em></li>
+        <li class="stop" style="--x:84%;--y:10px"><div class="ph" style="background-image:url(Images_2/OM.jpg.jpg)"></div><span class="pin">📍</span><h3>6. Om Parvat View Point</h3><p>The final climb. Witness the sacred Om Parvat, a sight beyond words.</p><em>🏍 ~ 70 km</em></li>
+      </ol>
+    </div>
+    <div class="route-stats">
+      <div><span>🛣</span><small>Total Distance</small><b>~ 950 km</b></div>
+      <div><span>🏔</span><small>Highest Altitude</small><b>~ 4,700 m</b></div>
+      <div><span>📅</span><small>Best Time</small><b>May – October</b></div>
+    </div>
+    <p class="route-foot">SAME ROADS &nbsp;|&nbsp; HIGHER DREAMS &nbsp;|&nbsp; HIMALAYAN RIDES</p>
+  </div>
+</section>
+
+<section class="section" id="inc">
+  <div class="head"><div><h2>What's Included</h2><p class="muted">Sample details. Update these to match your real packages.</p></div></div>
+  <div class="inc-grid">
+    <div class="box"><h3>✔ Included</h3><ul><li>Bike rental with helmet and riding gloves</li><li>Experienced road captain and backup vehicle</li><li>Mechanic and spare parts support</li><li>Stays on twin sharing and daily breakfast and dinner</li><li>Inner Line Permit assistance</li><li>First aid kit and oxygen cylinder</li></ul></div>
+    <div class="box no"><h3>✘ Not included</h3><ul><li>Fuel for the bike</li><li>Lunch and snacks on the road</li><li>Personal expenses and travel insurance</li><li>Travel to and from Haldwani</li><li>Damage to the bike caused by rider error</li></ul></div>
+    <div class="box"><h3>🎒 What to carry</h3><ul><li>Riding jacket and waterproof layer</li><li>Thermals, woollen cap and gloves</li><li>Valid driving licence and ID proof</li><li>Sunglasses, sunscreen and lip balm</li><li>Personal medicines</li></ul></div>
+  </div>
+</section>
+
+<section class="section" id="fleet">
+  <div class="head"><div><h2>Our Fleet</h2><p class="muted">Every bike is serviced before each trip. Daily rates are sample values.</p></div></div>
+  <div class="grid3">
+    <article class="bike"><div class="bike-img"><span>🏍</span><img src="images/RE.H.jpg.jpeg" alt="Royal Enfield Himalayan 450" loading="lazy" onerror="this.remove()"></div><h3>Royal Enfield Himalayan 450</h3><p class="muted">452 cc · Best for rough mountain tracks</p><div class="card-f"><div class="price">₹ 2,500 <small>per day</small></div><a href="#book" class="btn btn-yellow">Reserve</a></div></article>
+    <article class="bike"><div class="bike-img"><span>🏍</span><img src="images/RE.C.jpg.jpeg" alt="Royal Enfield Classic 350" loading="lazy" onerror="this.remove()"></div><h3>Royal Enfield Classic 350</h3><p class="muted">349 cc · Easy, comfortable cruiser</p><div class="card-f"><div class="price">₹ 1,800 <small>per day</small></div><a href="#book" class="btn btn-yellow">Reserve</a></div></article>
+    <article class="bike"><div class="bike-img"><span>🏍</span><img src="images/RE.M.jpg.jpeg" alt="Royal Enfield Meteor 350" loading="lazy" onerror="this.remove()"></div><h3>Royal Enfield Meteor 350</h3><p class="muted">349 cc · Smooth for long highway days</p><div class="card-f"><div class="price">₹ 1,700 <small>per day</small></div><a href="#book" class="btn btn-yellow">Reserve</a></div></article>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="head">
+    <div><h2>Our Gallery</h2><p class="muted">A glimpse of the breathtaking views and unforgettable moments.</p></div>
+    <a href="#gallery" class="link">View Gallery →</a>
+  </div>
+  <div class="gallery">
+    <button class="g g1" data-img="images/g1.jpg" aria-label="Open photo"></button>
+    <button class="g g2" data-img="images/g2.jpg" aria-label="Open photo"></button>
+    <button class="g g3" data-img="images/g3.jpg" aria-label="Open photo"></button>
+    <button class="g g4" data-img="images/g4.jpg" aria-label="Open photo"></button>
+  </div>
+</section>
+
+<section class="section" id="reviews">
+  <div class="head">
+    <div><h2>What Our Riders Say</h2><p class="muted">Real stories from real adventurers.</p></div>
+    <div class="arrows"><button id="prev" aria-label="Previous">←</button><button id="next" aria-label="Next">→</button></div>
+  </div>
+  <div class="reviews" id="reviewTrack"></div>
+</section>
+
+
+<section class="section" id="book">
+  <div class="book">
+    <div><h2>Book Your Ride</h2><p class="muted">Fill in your details and we'll continue on WhatsApp to confirm dates and availability.</p>
+      <ul class="contact"><li>📞 +91 00000 00000</li><li>✉ hello@himalayanrides.in</li><li>📍 Haldwani, Uttarakhand</li><li>🕘 Mon–Sat, 9 am – 8 pm</li></ul></div>
+    <form id="bookForm">
+      <label>Your name<input name="name" required autocomplete="name"></label>
+      <label>Phone number<input name="phone" type="tel" required autocomplete="tel"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Package<select name="pkg"><option>Om Parvat Expedition</option><option>Adi Kailash Yatra</option><option>Combo: Om Parvat + Adi Kailash</option><option>Only bike rental</option></select></label>
+      <div class="row"><label>Start date<input name="date" type="date" required></label><label>Riders<input name="riders" type="number" min="1" max="20" value="2"></label></div>
+      <label>Message (optional)<textarea name="msg" rows="3"></textarea></label>
+      <button class="btn btn-yellow big" type="submit">Send Booking Request</button>
+    </form>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="head"><div><h2>Frequently Asked Questions</h2></div></div>
+  <div class="faq">
+    <details><summary>Do I need riding experience?</summary><p>Yes. You should be comfortable riding a 350 cc bike on hilly roads. Beginners can ride pillion with a road captain.</p></details>
+    <details><summary>Do I need a permit?</summary><p>Yes, an Inner Line Permit is needed for this route. We guide you through the process, and you only need to carry your ID proof.</p></details>
+    <details><summary>When is the best time to ride?</summary><p>Usually May to June and September to October. Roads can close during heavy monsoon rain.</p></details>
+    <details><summary>What if the bike breaks down?</summary><p>A mechanic and backup vehicle travel with the group, so you can continue your ride quickly.</p></details>
+    <details><summary>Can I cancel or reschedule?</summary><p>Yes. Reschedule requests are free up to 15 days before departure. Add your own refund policy here.</p></details>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div><h2>Ready for Your Next Adventure?</h2><p class="muted">Book your bike tour today and explore the unexplored.</p></div>
+  <div class="cta-btns">
+    <a href="#packages" class="btn btn-yellow">Book Now →</a>
+    <a href="https://wa.me/919927706844" target="_blank" rel="noopener" class="btn btn-wa">Chat on WhatsApp</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-top">
+    <div><a href="#home" class="logo">⛰ <span>HIMALAYAN RIDES<small>Ride · Explore · Experience</small></span></a><p class="muted">Guided bike tours and rentals for Om Parvat and Adi Kailash, run by a local Kumaoni team.</p></div>
+    <div><h4>Explore</h4><a href="#packages">Packages</a><a href="#route">Route</a><a href="#fleet">Fleet</a><a href="#gallery">Gallery</a></div>
+    <div><h4>Help</h4><a href="#faq">FAQ</a><a href="#reviews">Reviews</a><a href="#book">Book a ride</a></div>
+    <div><h4>Contact</h4><span>9927706844</span><span>hello@himalayanrides.in</span><span>Haldwani, Uttarakhand</span><div class="social"><a href="#" aria-label="Instagram">IG</a><a href="#" aria-label="YouTube">YT</a><a href="#" aria-label="Facebook">f</a></div></div>
+  </div>
+  <p class="copy">© 2025 Himalayan Rides. All rights reserved.</p>
+</footer>
+<a href="https://wa.me/919927706844" target="_blank" rel="noopener" class="wa-float" aria-label="Chat on WhatsApp">💬</a>
+<button class="totop" id="totop" aria-label="Back to top" hidden>↑</button>
+
+<div class="modal" id="modal" hidden><button id="closeModal" aria-label="Close">✕</button><div id="modalBody"></div></div>
+<script src="shared.js"></script>
+<script src="Java.js"></script>
+</body>
+</html>

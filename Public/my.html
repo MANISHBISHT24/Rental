@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Bookings – Himalayan Rides</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a1219;--card:#0e1822;--line:#22303c;--text:#f3f5f7;--muted:#8d9aa6;--yellow:#fbb825;--green:#1fa855}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:var(--yellow);text-decoration:none}button,input{font:inherit;color:inherit}
+.top{display:flex;justify-content:space-between;align-items:center;padding:16px 5%;border-bottom:1px solid var(--line)}
+.logo{font-weight:700;color:var(--text)}
+.wrap{max-width:820px;margin:0 auto;padding:32px 5% 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+h1{font-size:1.5rem;margin-bottom:6px}h2{font-size:1.1rem}
+.muted{color:var(--muted);font-size:.85rem}
+.btn{display:inline-block;background:var(--yellow);color:#111;border:0;border-radius:8px;padding:9px 18px;font-weight:600;font-size:.85rem;cursor:pointer}
+.btn:disabled{opacity:.6;cursor:wait}.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+form{display:grid;gap:12px;margin-top:16px}label{display:grid;gap:4px;font-size:.78rem;color:var(--muted)}
+input{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:.88rem}
+input:focus{outline:2px solid var(--yellow);border-color:transparent}
+.tabs{display:flex;gap:8px;margin-bottom:6px}.tabs button{padding:6px 16px;border:1px solid var(--line);border-radius:30px;background:none;cursor:pointer;font-size:.8rem;color:var(--muted)}
+.tabs button.on{background:var(--yellow);color:#111;border-color:var(--yellow)}
+.err{color:#e5675b;font-size:.82rem;min-height:1.2em}
+.head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.bk{margin-bottom:14px}.bk-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.chip{font-size:.7rem;padding:3px 10px;border-radius:20px;border:1px solid var(--line);text-transform:capitalize}
+.chip.confirmed,.chip.paid{border-color:var(--green);color:#5fe08e}.chip.cancelled{border-color:#7a3a35;color:#e5675b}.chip.new,.chip.unpaid{border-color:#7a6320;color:var(--yellow)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:14px 0;font-size:.82rem}
+.grid span{display:block;color:var(--muted);font-size:.7rem}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+details{margin-top:24px}summary{cursor:pointer;color:var(--muted);font-size:.85rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="top"><a class="logo" href="index.html">⛰ HIMALAYAN RIDES</a><a href="index.html">← Back to website</a></div>
+<div class="wrap">
+
+  <div class="card" id="auth">
+    <div class="tabs"><button class="on" data-m="login">Login</button><button data-m="register">Create account</button></div>
+    <h1 id="authTitle">Welcome back</h1>
+    <p class="muted">Apni bookings dekhein aur advance payment karein.</p>
+    <form id="authForm">
+      <label id="nameL" hidden>Your name<input name="name" autocomplete="name"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <label id="phoneL" hidden>Phone (optional)<input name="phone" type="tel" autocomplete="tel"></label>
+      <label>Password<input name="password" type="password" required minlength="8" autocomplete="current-password"></label>
+      <p class="err" id="aerr"></p>
+      <button class="btn" type="submit" id="abtn">Login</button>
+    </form>
+  </div>
+
+  <div id="dash" hidden>
+    <div class="head"><div><h1 id="hello">My Bookings</h1><p class="muted" id="who"></p></div><button class="btn ghost" id="logout">Logout</button></div>
+    <div id="list"></div>
+    <details class="card"><summary>Booking website ke form se ki thi par yahan nahi dikh rahi?</summary>
+      <form id="claim"><label>Booking ID<input name="id" type="number" required></label><label>Booking mein diya phone number<input name="phone" type="tel" required></label><p class="err" id="cerr"></p><button class="btn" type="submit">Add to my account</button></form>
+    </details>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const rs = n => '₹ ' + Number(n).toLocaleString('en-IN');
+let mode = 'login', CFG = { whatsapp: '919927706844', payEnabled: false };
+fetch(API + '/api/config').then(r => r.json()).then(c => CFG = c).catch(() => {});
+
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  mode = b.dataset.m;
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.toggle('on', x === b));
+  $('#nameL').hidden = $('#phoneL').hidden = mode !== 'register';
+  $('#authTitle').textContent = mode === 'login' ? 'Welcome back' : 'Create your account';
+  $('#abtn').textContent = mode === 'login' ? 'Login' : 'Create account'; $('#aerr').textContent = '';
+});
+$('#authForm').onsubmit = async e => {
+  e.preventDefault(); $('#aerr').textContent = ''; const btn = $('#abtn'); btn.disabled = true;
+  try {
+    const r = await fetch(API + '/api/customers/' + mode, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.fromEntries(new FormData(e.target))) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.error);
+    localStorage.setItem('hr_token', d.token); e.target.reset(); start();
+  } catch (err) { $('#aerr').textContent = err.message; } finally { btn.disabled = false; }
+};
+$('#logout').onclick = () => { localStorage.removeItem('hr_token'); start(); };
+
+async function api(path, opts = {}) {
+  const r = await fetch(API + path, { ...opts, headers: { 'Content-Type': 'application/json', ...authHdr() } });
+  const d = await r.json().catch(() => ({}));
+  if (r.status === 401) { localStorage.removeItem('hr_token'); start(); throw new Error('Please login again'); }
+  if (!r.ok) throw new Error(d.error || 'Error'); return d;
+}
+async function start() {
+  const logged = !!localStorage.getItem('hr_token');
+  $('#auth').hidden = logged; $('#dash').hidden = !logged; if (!logged) return;
+  try { const me = await api('/api/me'); $('#hello').textContent = 'Hi, ' + me.name; $('#who').textContent = me.email; draw(await api('/api/me/bookings')); } catch (e) {}
+}
+function draw(list) {
+  $('#list').innerHTML = list.map(b => {
+    const canPay = CFG.payEnabled && b.advance > 0 && b.pay_status !== 'paid' && b.status !== 'cancelled';
+    return `<div class="card bk"><div class="bk-h"><h2>${esc(b.pkg)}</h2><div><span class="chip ${b.status}">${b.status}</span> <span class="chip ${b.pay_status}">${b.pay_status}</span></div></div>
+    <div class="grid"><div><span>Booking ID</span>#${b.id}</div><div><span>Start date</span>${esc(b.date)}</div><div><span>Riders</span>${b.riders}</div>
+    <div><span>Total</span>${b.total ? rs(b.total) : 'As quoted'}</div><div><span>Advance</span>${b.advance ? rs(b.advance) : '–'}</div><div><span>Paid</span>${rs(b.paid)}</div></div>
+    <div class="acts">${canPay ? `<button class="btn" data-pay="${b.id}" data-amt="${b.advance - b.paid}">Pay ${rs(b.advance - b.paid)} advance</button>` : ''}
+    <a class="btn ghost" target="_blank" rel="noopener" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent('Hi, about my booking #' + b.id)}">WhatsApp us</a></div></div>`;
+  }).join('') || '<div class="card muted">Abhi koi booking nahi. <a href="index.html#book">Book a ride →</a></div>';
+}
+$('#list').onclick = async e => {
+  const id = e.target.dataset.pay; if (!id) return;
+  const btn = e.target, label = btn.textContent; btn.disabled = true; btn.textContent = 'Opening payment...';
+  try { await payAdvance(+id); alert('Payment received ✅ Thank you!'); start(); }
+  catch (err) { alert(err.message); btn.disabled = false; btn.textContent = label; }
+};
+$('#claim').onsubmit = async e => {
+  e.preventDefault(); $('#cerr').textContent = '';
+  try { await api('/api/me/claim', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) }); e.target.reset(); start(); }
+  catch (err) { $('#cerr').textContent = err.message; }
+};
+start();
+</script>
+</body>
+</html>

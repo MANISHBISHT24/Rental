@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Himalayan Rides – Admin</title>
+<style>
+:root{--bg:#0a1219;--card:#0e1822;--line:#22303c;--text:#f3f5f7;--muted:#8d9aa6;--yellow:#fbb825}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.btn{background:var(--yellow);color:#111;border:0;border-radius:8px;padding:8px 16px;font-weight:600}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:none;color:#e5675b;border:1px solid #5a2a26;padding:5px 10px}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.login{max-width:340px;margin:18vh auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;display:grid;gap:14px}
+.wrap{max-width:1200px;margin:auto;padding:24px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.stat b{font-size:1.6rem;color:var(--yellow);display:block}.stat span{color:var(--muted);font-size:.8rem}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.tab.on{background:var(--yellow);color:#111}
+.tablewrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:500;font-size:.78rem}
+td small{color:var(--muted);display:block}
+.msg{max-width:240px;white-space:pre-wrap;word-break:break-word}
+a{color:var(--yellow)}
+.rev{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:14px}
+.addrev{display:grid;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px;max-width:560px}
+input.sm{width:84px}input.md{width:150px}input.lg{width:210px}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<form class="login" id="login">
+  <h2>Admin login</h2>
+  <input type="password" id="pw" placeholder="Password" required autocomplete="current-password">
+  <button class="btn" type="submit">Login</button>
+  <p id="lerr" style="color:#e5675b"></p>
+</form>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <h2>Himalayan Rides – Admin</h2>
+    <div class="bar" style="margin:0"><button class="btn ghost" id="refresh">Refresh</button><button class="btn ghost" id="logout">Logout</button></div>
+  </header>
+  <div class="bar"><button class="btn ghost tab on" data-t="b">Bookings</button><button class="btn ghost tab" data-t="p">Packages</button><button class="btn ghost tab" data-t="r">Reviews</button></div>
+
+  <section id="bookings">
+    <div class="stats" id="stats"></div>
+    <div class="bar">
+      <select id="filter"><option value="">All status</option><option>new</option><option>contacted</option><option>confirmed</option><option>cancelled</option></select>
+      <input id="search" placeholder="Search name / phone">
+      <button class="btn" id="csv">Download CSV</button>
+    </div>
+    <div class="tablewrap"><table><thead><tr><th>#</th><th>Customer</th><th>Package</th><th>Start</th><th>Riders</th><th>Message</th><th>Status</th><th>Payment</th><th></th></tr></thead><tbody id="rows"></tbody></table><div class="empty" id="empty" hidden>Abhi koi booking nahi.</div></div>
+  </section>
+
+  <section id="packages" hidden>
+    <p style="color:var(--muted);margin-bottom:12px">Yahan keemat badalne par website par turant naya rate dikhega. Purani bookings ki keemat nahi badlegi.</p>
+    <div class="tablewrap"><table style="min-width:1050px"><thead><tr><th>Order</th><th>Name</th><th>Tags</th><th>Days</th><th>Km</th><th>Price (₹ per person)</th><th>Image path</th><th>Colors</th><th>Show</th><th></th></tr></thead><tbody id="pkrows"></tbody></table></div>
+    <button class="btn" id="addpk" style="margin-top:14px">+ Add package</button>
+  </section>
+
+  <section id="reviews" hidden>
+    <form class="addrev" id="addrev">
+      <b>Naya review jodein</b>
+      <input name="n" placeholder="Name" required><input name="c" placeholder="City">
+      <textarea name="t" rows="3" placeholder="Review (kam se kam 10 letters)" required></textarea>
+      <button class="btn" type="submit">Add review</button>
+    </form>
+    <div id="revlist"></div>
+  </section>
+</div>
+
+<script>
+const API = '';
+let token = sessionStorage.getItem('adm') || '', bookings = [];
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function api(path, opts = {}) {
+  const r = await fetch(API + path, { ...opts, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token, ...(opts.headers || {}) } });
+  if (r.status === 401 && path !== '/api/admin/login') { logout(); throw new Error('Session khatam'); }
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'Error');
+  return d;
+}
+function show(on) { $('#login').hidden = on; $('#app').hidden = !on; }
+function logout() { token = ''; sessionStorage.removeItem('adm'); show(false); }
+
+$('#login').onsubmit = async e => {
+  e.preventDefault(); $('#lerr').textContent = '';
+  try { const d = await api('/api/admin/login', { method: 'POST', body: JSON.stringify({ password: $('#pw').value }) });
+    token = d.token; sessionStorage.setItem('adm', token); $('#pw').value = ''; show(true); loadAll();
+  } catch (err) { $('#lerr').textContent = err.message; }
+};
+$('#logout').onclick = logout;
+$('#refresh').onclick = loadAll;
+document.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === b));
+  $('#bookings').hidden = b.dataset.t !== 'b'; $('#packages').hidden = b.dataset.t !== 'p'; $('#reviews').hidden = b.dataset.t !== 'r';
+});
+
+async function loadAll() { try { bookings = await api('/api/admin/bookings'); drawBookings(); loadPackages(); loadReviews(); } catch (e) { alert(e.message); } }
+
+function drawBookings() {
+  const st = ['new', 'contacted', 'confirmed', 'cancelled'];
+  $('#stats').innerHTML = `<div class="stat"><b>${bookings.length}</b><span>Total</span></div>` + st.map(s => `<div class="stat"><b>${bookings.filter(b => b.status === s).length}</b><span>${s}</span></div>`).join('');
+  const f = $('#filter').value, q = $('#search').value.trim().toLowerCase();
+  const list = bookings.filter(b => (!f || b.status === f) && (!q || (b.name + b.phone).toLowerCase().includes(q)));
+  $('#empty').hidden = list.length > 0;
+  $('#rows').innerHTML = list.map(b => `<tr>
+    <td>${b.id}<small>${new Date(b.created).toLocaleDateString('en-IN')}</small></td>
+    <td><b>${esc(b.name)}</b><small>${esc(b.email)}</small><small><a href="tel:${esc(b.phone.replace(/[^+\d]/g, ''))}">${esc(b.phone)}</a> · <a target="_blank" rel="noopener" href="https://wa.me/${b.phone.replace(/\D/g, '')}">WhatsApp</a></small></td>
+    <td>${esc(b.pkg)}</td><td>${esc(b.date)}</td><td>${b.riders}</td><td class="msg">${esc(b.msg) || '–'}</td>
+    <td><select data-s="${b.id}">${st.map(s => `<option${s === b.status ? ' selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td><select data-p="${b.id}">${['unpaid','paid','refunded'].map(s => `<option${s === b.pay_status ? ' selected' : ''}>${s}</option>`).join('')}</select><small>${b.advance ? '₹' + b.paid + ' / ₹' + b.advance + ' advance' : 'no advance'}</small></td>
+    <td><button class="btn red" data-d="${b.id}">Delete</button></td></tr>`).join('');
+}
+$('#filter').onchange = $('#search').oninput = drawBookings;
+$('#rows').onchange = async e => {
+  const id = e.target.dataset.s || e.target.dataset.p; if (!id) return;
+  const body = e.target.dataset.s ? { status: e.target.value } : { pay_status: e.target.value };
+  if (body.status === 'confirmed' && !confirm('Confirm karne par customer ko email jayega (agar email set hai). Aage badhein?')) return drawBookings();
+  try { const nb = await api('/api/admin/bookings/' + id, { method: 'PATCH', body: JSON.stringify(body) }); Object.assign(bookings.find(b => b.id == id), nb); drawBookings(); } catch (err) { alert(err.message); drawBookings(); } };
+$('#rows').onclick = async e => { const id = e.target.dataset.d; if (!id || !confirm('Ye booking delete karein?')) return;
+  try { await api('/api/admin/bookings/' + id, { method: 'DELETE' }); bookings = bookings.filter(b => b.id != id); drawBookings(); } catch (err) { alert(err.message); } };
+
+$('#csv').onclick = () => {
+  const cell = v => { let s = String(v ?? ''); if (/^[=+\-@]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g, '""') + '"'; };
+  const head = ['ID', 'Created', 'Name', 'Email', 'Phone', 'Package', 'Start date', 'Riders', 'Message', 'Status', 'Total', 'Advance', 'Paid', 'Payment'];
+  const rows = bookings.map(b => [b.id, b.created, b.name, b.email, b.phone, b.pkg, b.date, b.riders, b.msg, b.status, b.total, b.advance, b.paid, b.pay_status]);
+  const csv = '\ufeff' + [head, ...rows].map(r => r.map(cell).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'bookings.csv'; a.click(); URL.revokeObjectURL(a.href);
+};
+
+/* ---------- Packages ---------- */
+async function loadPackages() {
+  const list = await api('/api/admin/packages');
+  $('#pkrows').innerHTML = list.map(p => pkRow(p)).join('');
+}
+const pkRow = p => `<tr data-k="${esc(p.key || '')}">
+  <td><input class="sm" data-f="sort" type="number" value="${p.sort ?? 0}"></td>
+  <td><input class="lg" data-f="name" value="${esc(p.name)}"></td>
+  <td><input class="lg" data-f="tags" value="${esc(p.tags)}"></td>
+  <td><input class="sm" data-f="days" type="number" value="${p.days}"></td>
+  <td><input class="sm" data-f="km" value="${esc(p.km)}"></td>
+  <td><input class="md" data-f="price" type="number" value="${p.price}"></td>
+  <td><input class="lg" data-f="img" value="${esc(p.img)}"></td>
+  <td><input class="md" data-f="bg" value="${esc(p.bg)}"></td>
+  <td><input data-f="active" type="checkbox" ${p.active === 0 ? '' : 'checked'}></td>
+  <td><button class="btn" data-save>Save</button></td></tr>`;
+$('#addpk').onclick = () => $('#pkrows').insertAdjacentHTML('beforeend', pkRow({ key: '', sort: 9, name: 'New Package', tags: '', days: 5, km: '', price: 0, img: '', bg: '#456,#9ab', active: 1 }));
+$('#pkrows').onclick = async e => {
+  if (!e.target.dataset.save) return;
+  const tr = e.target.closest('tr'), k = tr.dataset.k, body = {};
+  tr.querySelectorAll('[data-f]').forEach(i => body[i.dataset.f] = i.type === 'checkbox' ? i.checked : i.value);
+  try { await api('/api/admin/packages' + (k ? '/' + k : ''), { method: k ? 'PUT' : 'POST', body: JSON.stringify(body) }); alert('Saved ✅ Website par update ho gaya.'); loadPackages(); }
+  catch (err) { alert(err.message); }
+};
+
+async function loadReviews() {
+  const list = await api('/api/admin/reviews');
+  $('#revlist').innerHTML = list.map(r => `<div class="rev"><div><b>${esc(r.n)}</b> <small style="color:var(--muted)">${esc(r.c)}</small><p style="margin-top:6px">${esc(r.t)}</p></div><button class="btn red" data-r="${r.id}">Delete</button></div>`).join('') || '<div class="empty">Koi review nahi.</div>';
+}
+$('#revlist').onclick = async e => { const id = e.target.dataset.r; if (!id || !confirm('Review delete karein?')) return;
+  try { await api('/api/admin/reviews/' + id, { method: 'DELETE' }); loadReviews(); } catch (err) { alert(err.message); } };
+$('#addrev').onsubmit = async e => { e.preventDefault();
+  try { await api('/api/admin/reviews', { method: 'POST', body: JSON.stringify(Object.fromEntries(new FormData(e.target))) }); e.target.reset(); loadReviews(); } catch (err) { alert(err.message); } };
+
+if (token) { show(true); loadAll(); }
+</script>
+</body>
+</html>
